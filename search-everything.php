@@ -298,9 +298,11 @@ class SearchEverything {
 	// create the search excerpts query
 	function se_build_search_excerpt() {
 		global $wpdb;
-		$s = $this->query_instance->query_vars['s'];
+		$vars = $this->query_instance->query_vars;
+		
+		$s = $vars['s'];
 		$search_terms = $this->se_get_search_terms();
-		$exact = $this->query_instance->query_vars['exact'];
+		$exact = isset( $vars['exact'] ) ? $vars['exact'] : '';
 		$search = '';
 
 		if ( !empty( $search_terms ) ) {
@@ -313,13 +315,13 @@ class SearchEverything {
 				$searchand = ' AND ';
 			}
 			$sentence_term = $wpdb->escape( $s );
-			if ( !$sentence && count( $search_terms ) > 1 && $search_terms[0] != $sentence_term ) {
+			if ( count( $search_terms ) > 1 && $search_terms[0] != $sentence_term ) {
 				$search = "($search) OR ($wpdb->posts.post_excerpt LIKE '{$n}{$sentence_term}{$n}')";
 			}
 			if ( !empty( $search ) )
 				$search = " OR ({$search}) ";
 		}
-		$this->se_log( "excerpt where: ".$where );
+
 		return $search;
 	}
 
@@ -362,9 +364,11 @@ class SearchEverything {
 	// create the comments data query
 	function se_build_search_comments() {
 		global $wpdb;
-		$s = $this->query_instance->query_vars['s'];
+		$vars = $this->query_instance->query_vars;
+		
+		$s = $vars['s'];
 		$search_terms = $this->se_get_search_terms();
-		$exact = $this->query_instance->query_vars['exact'];
+		$exact = isset( $vars['exact'] ) ? $vars['exact'] : '';
 
 		if ( !empty( $search_terms ) ) {
 			// Building search query on comments content
@@ -379,7 +383,7 @@ class SearchEverything {
 				$searchand = ' AND ';
 			}
 			$sentense_term = $wpdb->escape( $s );
-			if ( !$sentence && count( $search_terms ) > 1 && $search_terms[0] != $sentense_term ) {
+			if ( count( $search_terms ) > 1 && $search_terms[0] != $sentense_term ) {
 				if ( $this->wp_ver23 ) {
 					$searchContent = "($searchContent) OR (cmt.comment_content LIKE '{$n}{$sentense_term}{$n}')";
 				}
@@ -397,7 +401,7 @@ class SearchEverything {
 					$searchand = ' AND ';
 				}
 				$sentence_term = $wpdb->escape( $s );
-				if ( !$sentence && count( $search_terms ) > 1 && $search_terms[0] != $sentence_term ) {
+				if ( count( $search_terms ) > 1 && $search_terms[0] != $sentence_term ) {
 					if ( $this->wp_ver23 ) {
 						$comment_author = "($comment_author) OR (cmt.comment_author LIKE '{$n}{$sentence_term}{$n}')";
 					}
@@ -496,9 +500,11 @@ class SearchEverything {
 	// create the search tag query
 	function se_build_search_tag() {
 		global $wpdb;
-		$s = $this->query_instance->query_vars['s'];
+		$vars = $this->query_instance->query_vars;
+		
+		$s = $vars['s'];
 		$search_terms = $this->se_get_search_terms();
-		$exact = $this->query_instance->query_vars['exact'];
+		$exact = isset( $vars['exact'] ) ? $vars['exact'] : '';
 		$search = '';
 
 		if ( !empty( $search_terms ) ) {
@@ -513,7 +519,7 @@ class SearchEverything {
 				$searchand = ' AND ';
 			}
 			$sentence_term = $wpdb->escape( $s );
-			if ( !$sentence && count( $search_terms ) > 1 && $search_terms[0] != $sentence_term ) {
+			if ( count( $search_terms ) > 1 && $search_terms[0] != $sentence_term ) {
 				if ( $this->wp_ver23 ) {
 					$search = "($search) OR (tter.name LIKE '{$n}{$sentence_term}{$n}')";
 				}
@@ -528,9 +534,11 @@ class SearchEverything {
 	// create the search categories query
 	function se_build_search_categories() {
 		global $wpdb;
-		$s = $this->query_instance->query_vars['s'];
+		$vars = $this->query_instance->query_vars;
+		
+		$s = $vars['s'];
 		$search_terms = $this->se_get_search_terms();
-		$exact = $this->query_instance->query_vars['exact'];
+		$exact = isset( $vars['exact'] ) ? $vars['exact'] : '';
 		$search = '';
 
 		if ( !empty( $search_terms ) ) {
@@ -543,7 +551,7 @@ class SearchEverything {
 				$searchSlug .= "{$searchand}(tter.slug LIKE '{$n}".sanitize_title_with_dashes( $term )."{$n}')";
 				$searchand = ' AND ';
 			}
-			if ( !$sentence && count( $search_terms ) > 1 && $search_terms[0] != $s ) {
+			if ( count( $search_terms ) > 1 && $search_terms[0] != $s ) {
 				$searchSlug = "($searchSlug) OR (tter.slug LIKE '{$n}".sanitize_title_with_dashes( $s )."{$n}')";
 			}
 			if ( !empty( $searchSlug ) )
@@ -558,7 +566,7 @@ class SearchEverything {
 				$searchand = ' AND ';
 			}
 			$sentence_term = $wpdb->escape( $s );
-			if ( !$sentence && count( $search_terms ) > 1 && $search_terms[0] != $sentence_term ) {
+			if ( count( $search_terms ) > 1 && $search_terms[0] != $sentence_term ) {
 				$searchDesc = "($searchDesc) OR (ttax.description LIKE '{$n}{$sentence_term}{$n}')";
 			}
 			if ( !empty( $searchDesc ) )
