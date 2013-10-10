@@ -686,11 +686,13 @@ class SearchEverything {
 			}
 			// if we're searching custom taxonomies
 			if ( $this->options['se_use_tax_search'] ) {
-				$all_taxonomies = get_object_taxonomies( 'post' );
+				$all_taxonomies = get_taxonomies();
+				$filter_taxonomies = array( 'post_tag', 'category', 'nav_menu', 'link_category' );
+
 				foreach ( $all_taxonomies as $taxonomy ) {
-					if ( $taxonomy == 'post_tag' || $taxonomy == 'category' )
+					if ( in_array( $taxonomy, $filter_taxonomies ) )
 						continue;
-					$on[] = "ttax.taxonomy = '".addslashes( $taxonomy )."'";
+					$on[] = "ttax.taxonomy = '" . addslashes( $taxonomy )."'";
 				}
 			}
 			// build our final string
