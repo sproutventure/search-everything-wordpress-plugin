@@ -18,9 +18,7 @@ Class se_admin {
 	}
 
 	function se_add_options_panel() {
-		global $wp_version;
-		$cap = version_compare('2.0', $wp_version, '<') ? 'publish_posts' : 7;
-		add_options_page('Search', 'Search Everything', $cap, 'extend_search', array(&$this, 'se_option_page'));
+		add_options_page('Search', 'Search Everything', 'manage_options', 'extend_search', array(&$this, 'se_option_page'));
 	}
 
 	//build admin interface
