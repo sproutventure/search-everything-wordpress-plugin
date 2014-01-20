@@ -15,6 +15,18 @@ Class se_admin {
 		add_action('admin_head', array(&$this, 'se_options_style'));
 		add_action('admin_menu', array(&$this, 'se_add_options_panel'));
 
+		/**
+		 * Save se_show_we_tried option this should be moved somewhere else once
+		 * options saving is updated
+		 */
+		if ( isset( $_GET['we_tried'] ) && 0 == $_GET['we_tried'] ) {
+			update_option( 'se_show_we_tried', 0 );
+		}
+
+		if ( get_option( 'se_show_we_tried', 1 ) ) {
+			add_action( 'all_admin_notices', array( &$this, 'notice_we_tried' ) );
+		}
+
 	}
 
 	function se_add_options_panel() {
@@ -63,31 +75,6 @@ Class se_admin {
 		$options = get_option('se_options');
 
 		?>
-
-	<div class="welcome-panel" id="seplus">
-		
-		<div class="welcome-panel-content">
-		
-				<h3>Well, we tried...</h3>
-
-				<p class="about-description" style="margin-bottom:1em;">It took a few years of kick-starting the Search Everything Plus project and it being subverted by new full-time projects at Sprout Venture before realizing it had to stop. Our goal of fixing WordPress search with SE+ needed too much focus, something we couldn't sacrifice because of growing client projects. After a year of trying and nothing awesome to show we decided to cease all planning and development on the Search Everything Plus plugin/service. </p>
-		
-				<p class="about-description" style="font-size:1.1em;margin-bottom:1em;">But our goal of fixing WordPress search isn't lost and we have <strong>two</strong> recomendations for you:</p>
-				
-				<p class="about-description" style="font-size:1.1em;margin-bottom:1em;"><strong><a href="http://s-v.me/RgIu">SearchWP</a></strong> &mdash;
-				They claim it's the best search plugin around and we can't agree more. It's seriously close to what we had planned for SE+, in many ways it's much better than what we counted on accomplishing.</p>
-
-				<p class="about-description" style="font-size:1.1em;margin-bottom:1em;"><strong><a href="http://s-v.me/Q8wb">Swiftype Search plugin</a></strong> &mdash; 
-				It replaces the standard WordPress search with a better, more relevant search engine, and in doing so offloads the performance burden of search queries from your database to theirs.</p>
-				
-				
-				<p class="about-description" style="font-size:1.1em;margin-bottom:1em;">The advantages of both should be clear but if you're undecided we recomend <a href="http://s-v.me/RgIu">SearchWP</a> becuase of how it doesn't require a subscription.
-					
-				<p class="about-description" style="font-size:1.1em;">Sincerely,
-				Dan Cameron<br/>
-				Principal and Janitor, Sprout Venture Inc.</p>
-		</div>
-	</div>
 
 	<div class="wrap">
 		<h2><?php _e('Search Everything Version:', 'SearchEverything'); ?> <?php echo $this->version; ?></h2>
@@ -407,6 +394,42 @@ Class se_admin {
 
 		<?php
 	}	//end se_option_page
+
+	function notice_we_tried() {
+		$screen = get_current_screen();
+		if ( 'settings_page_extend_search' == $screen->id ):
+			$close_url = admin_url( $screen->parent_file );
+			$close_url = add_query_arg( array(
+				'page' => 'extend_search',
+				'we_tried' => 0,
+			), $close_url );
+		?>
+		<div class="updated" id="seplus" style="position: relative;">
+
+			<a href="<?php echo $close_url; ?>" style="position: absolute; right: 30px; top: 20px;">Dismiss</a>
+
+			<h3>Well, we tried...</h3>
+
+			<p class="about-description" style="margin-bottom:1em;">It took a few years of kick-starting the Search Everything Plus project and it being subverted by new full-time projects at Sprout Venture before realizing it had to stop. Our goal of fixing WordPress search with SE+ needed too much focus, something we couldn't sacrifice because of growing client projects. After a year of trying and nothing awesome to show we decided to cease all planning and development on the Search Everything Plus plugin/service. </p>
+
+			<p class="about-description" style="font-size:1.1em;margin-bottom:1em;">But our goal of fixing WordPress search isn't lost and we have <strong>two</strong> recomendations for you:</p>
+
+			<p class="about-description" style="font-size:1.1em;margin-bottom:1em;"><strong><a href="http://s-v.me/RgIu">SearchWP</a></strong> &mdash;
+			They claim it's the best search plugin around and we can't agree more. It's seriously close to what we had planned for SE+, in many ways it's much better than what we counted on accomplishing.</p>
+
+			<p class="about-description" style="font-size:1.1em;margin-bottom:1em;"><strong><a href="http://s-v.me/Q8wb">Swiftype Search plugin</a></strong> &mdash;
+			It replaces the standard WordPress search with a better, more relevant search engine, and in doing so offloads the performance burden of search queries from your database to theirs.</p>
+
+
+			<p class="about-description" style="font-size:1.1em;margin-bottom:1em;">The advantages of both should be clear but if you're undecided we recomend <a href="http://s-v.me/RgIu">SearchWP</a> becuase of how it doesn't require a subscription.
+
+			<p class="about-description" style="font-size:1.1em;">Sincerely,
+			Dan Cameron<br/>
+			Principal and Janitor, Sprout Venture Inc.</p>
+		</div>
+		<?php
+		endif;
+	}
 
 	//styling options page
 	function se_options_style() {
