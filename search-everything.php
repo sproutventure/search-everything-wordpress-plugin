@@ -516,7 +516,7 @@ class SearchEverything {
 				if ( $this->wp_ver23 ) {
 					$search .= "{$searchand}(tter.name LIKE '{$n}{$term}{$n}')";
 				}
-				$searchand = ' AND ';
+				$searchand = ' OR ';
 			}
 			$sentence_term = $wpdb->escape( $s );
 			if ( count( $search_terms ) > 1 && $search_terms[0] != $sentence_term ) {
